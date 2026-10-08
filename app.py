@@ -80,14 +80,24 @@ uploaded_file = st.file_uploader(
 if uploaded_file is not None:
 
     image = Image.open(uploaded_file)
+    image.thumbnail((250, 180))
 
-    st.image(
-        image,
-        caption="Uploaded image",
-        width=250
-        # height=250
-        # use_container_width=True
-    )
+    # Center the image on the screen
+    left, middle, right = st.columns([1, 2, 1])
+    
+    with middle:
+        st.image(
+            image,
+            caption="Uploaded image",
+            width=image.width
+        )
+    # st.image(
+    #     image,
+    #     caption="Uploaded image",
+    #     width=250
+    #     # height=250
+    #     # use_container_width=True
+    # )
 
     if st.button("🔍 Predict Flower", type="primary"):
 
