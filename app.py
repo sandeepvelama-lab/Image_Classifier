@@ -65,7 +65,7 @@ def predict_image(image, model):
     return predicted_class, confidence
 
 
-st.title("🌸 Flower for u SWETHA. Love You.")
+st.title("🌸 Flower Classifier")
 
 st.write(
     "Upload an image of a flower and the AI model "
