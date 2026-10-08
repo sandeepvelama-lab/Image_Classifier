@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 
 st.set_page_config(
-    page_title="Flower For You Swetha...Love you",
+    page_title="Flower For You Swetha...Love You",
     page_icon="🌸",
     layout="centered"
 )
