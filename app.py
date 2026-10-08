@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 
 st.set_page_config(
-    page_title="Flower For You Swetha...Love You",
+    page_title="Flower Classifier",
     page_icon="🌸",
     layout="centered"
 )
@@ -65,7 +65,7 @@ def predict_image(image, model):
     return predicted_class, confidence
 
 
-st.title("🌸 Flower Classifier")
+st.title("🌸 Flower for u SWETHA. Love You.")
 
 st.write(
     "Upload an image of a flower and the AI model "
