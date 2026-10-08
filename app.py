@@ -83,8 +83,8 @@ if uploaded_file is not None:
 
     st.image(
         image,
-        caption="Uploaded image",
-        use_container_width=True
+        caption="Uploaded image"
+        # use_container_width=True
     )
 
     if st.button("🔍 Predict Flower", type="primary"):
