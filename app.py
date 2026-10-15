@@ -1,3 +1,4 @@
+```python
 import streamlit as st
 import tensorflow as tf
 import numpy as np
@@ -8,56 +9,91 @@ st.set_page_config(
     page_icon="🌸",
     layout="centered"
 )
+
+# Map each model selection to its model file and image
+MODEL_CONFIG = {
+    "My_Model_0.1": {
+        "model_path": "My_Model_0.1.keras",
+        "image_path": "My_Model_0.1.png",
+        "class_names": [
+            "daisy",
+            "dandelion",
+            "rose",
+            "sunflower",
+            "tulip"
+        ]
+    },
+    "My_Model_0.2": {
+        "model_path": "My_Model_0.2.keras",
+        "image_path": "My_Model_0.2.png",
+        "class_names": [
+            "daisy",
+            "dandelion",
+            "rose",
+            "sunflower",
+            "tulip"
+        ]
+    },
+    "My_Model_1.0": {
+        "model_path": "My_Model_1.0.keras",
+        "image_path": "My_Model_1.0.png",
+        "class_names": [
+            "daisy",
+            "dandelion",
+            "rose",
+            "sunflower",
+            "tulip",
+            "lily"
+        ]
+    }
+}
+
+# Sidebar
 with st.sidebar:
     st.header("Settings")
-    model = st.selectbox(
-        "Transcription model",
-        ["My_Model_0.1", "My_Model_0.1", "My_Model_0.1"],
-        index=0,
+
+    selected_model = st.selectbox(
+        "Select Model",
+        list(MODEL_CONFIG.keys()),
+        index=0
     )
-    st.image("My_Model_0.1.png", use_container_width=True)
-    
+
+    # Get configuration for the selected model
+    config = MODEL_CONFIG[selected_model]
+
+    st.image(
+        config["image_path"],
+        use_container_width=True
+    )
+
+    st.caption(f"Selected: {selected_model}")
+
 IMAGE_SIZE = (180, 180)
 
-# IMPORTANT:
-# Replace these with the EXACT output of:
-# print(dataset.class_names)
-
-CLASS_NAMES = [
-    "daisy",
-    "dandelion",
-    "rose",
-    "sunflower",
-    "tulip",
-]
-
-MODEL_PATH = "flower_photos.keras"
+MODEL_PATH = config["model_path"]
+CLASS_NAMES = config["class_names"]
 
 
 @st.cache_resource
-def load_model():
-    return tf.keras.models.load_model(MODEL_PATH)
+def load_model(model_path):
+    return tf.keras.models.load_model(model_path)
 
 
-def predict_image(image, model):
+def predict_image(image, model, class_names):
     image = image.convert("RGB")
     image = image.resize(IMAGE_SIZE)
 
     image_array = tf.keras.utils.img_to_array(image)
     image_array = image_array / 255.0
-
     image_array = np.expand_dims(image_array, axis=0)
 
     prediction = model.predict(image_array, verbose=0)
 
-    # Multi-class model
     if prediction.shape[-1] > 1:
         probabilities = prediction[0]
-
         predicted_index = int(np.argmax(probabilities))
         confidence = float(probabilities[predicted_index])
 
-    # Binary model
     else:
         probability = float(prediction[0][0])
 
@@ -68,7 +104,7 @@ def predict_image(image, model):
             predicted_index = 0
             confidence = 1.0 - probability
 
-    predicted_class = CLASS_NAMES[predicted_index]
+    predicted_class = class_names[predicted_index]
 
     return predicted_class, confidence
 
@@ -86,26 +122,26 @@ uploaded_file = st.file_uploader(
 )
 
 if uploaded_file is not None:
+    image = Image.open(uploaded_file).convert("RGB")
 
-    image = Image.open(uploaded_file)
-    image.thumbnail((250, 180))
+    # Display a smaller image
+    preview = image.copy()
+    preview.thumbnail((250, 180))
 
     st.image(
-        image,
+        preview,
         caption="Uploaded image",
         width=200
-        # height=250
-        # use_container_width=True
     )
 
     if st.button("🔍 Predict Flower", type="primary"):
-
         try:
-            model = load_model()
+            model = load_model(MODEL_PATH)
 
             predicted_class, confidence = predict_image(
                 image,
-                model
+                model,
+                CLASS_NAMES
             )
 
             st.success(
@@ -124,3 +160,4 @@ if uploaded_file is not None:
 st.divider()
 
 st.caption("Powered by TensorFlow + Streamlit")
+```
