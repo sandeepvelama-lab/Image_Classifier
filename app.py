@@ -12,15 +12,11 @@ with st.sidebar:
     st.header("Settings")
     model = st.selectbox(
         "Transcription model",
-        ["gpt-4o-mini-transcribe", "gpt-4o-transcribe", "whisper-1"],
+        ["My_Model_0.1", "My_Model_0.1", "My_Model_0.1"],
         index=0,
     )
-    language = st.text_input(
-        "Language (optional)",
-        value="",
-        placeholder="e.g. en",
-        help="ISO-639-1 language code. Leaving this blank lets the transcription model detect it.",
-    )
+    st.image("My_Model_0.1.png", use_container_width=True)
+    
 IMAGE_SIZE = (180, 180)
 
 # IMPORTANT:
