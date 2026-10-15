@@ -68,8 +68,8 @@ with st.sidebar:
         )
 
         st.caption(f"Selected: {selected_model}")
-    else:
-        st.info("Please select a model.")
+    # else:
+    #     st.info("Please select a model.")
 
 # Set configuration only after a model is selected
 if selected_model != "Select":
