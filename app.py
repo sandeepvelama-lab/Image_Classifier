@@ -51,26 +51,30 @@ MODEL_CONFIG = {
 with st.sidebar:
     st.header("Settings")
 
+    model_options = ["Select"] + list(MODEL_CONFIG.keys())
+
     selected_model = st.selectbox(
         "Select Model",
-        list(MODEL_CONFIG.keys()),
+        model_options,
         index=0
     )
 
-    # Get configuration for the selected model
-    config = MODEL_CONFIG[selected_model]
+    if selected_model != "Select":
+        config = MODEL_CONFIG[selected_model]
 
-    st.image(
-        config["image_path"],
-        use_container_width=True
-    )
+        st.image(
+            config["image_path"],
+            use_container_width=True
+        )
 
-    st.caption(f"Selected: {selected_model}")
+        st.caption(f"Selected: {selected_model}")
+    else:
+        st.info("Please select a model.")
 
-IMAGE_SIZE = (180, 180)
-
-MODEL_PATH = config["model_path"]
-CLASS_NAMES = config["class_names"]
+# Set configuration only after a model is selected
+if selected_model != "Select":
+    MODEL_PATH = MODEL_CONFIG[selected_model]["model_path"]
+    CLASS_NAMES = MODEL_CONFIG[selected_model]["class_names"]
 
 
 @st.cache_resource
