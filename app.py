@@ -162,5 +162,3 @@ if uploaded_file is not None:
 
 st.divider()
 
-st.caption("Powered by TensorFlow + Streamlit")
-
