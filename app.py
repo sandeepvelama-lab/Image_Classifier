@@ -80,7 +80,7 @@ if selected_model != "Select":
 @st.cache_resource
 def load_model(model_path):
     return tf.keras.models.load_model(model_path)
-
+IMAGE_SIZE = (180, 180)
 
 def predict_image(image, model, class_names):
     image = image.convert("RGB")
