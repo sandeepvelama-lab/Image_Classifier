@@ -23,7 +23,7 @@ CLASS_NAMES = [
     "tulip",
 ]
 
-MODEL_PATH = "flower_photos_Aug.keras"
+MODEL_PATH = "flower_photos.keras"
 
 
 @st.cache_resource
