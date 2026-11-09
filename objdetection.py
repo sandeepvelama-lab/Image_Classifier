@@ -2,7 +2,7 @@ import streamlit as st
 from ultralytics import YOLO
 from PIL import Image
 import pandas as pd
-import cv2
+# import cv2
 import numpy as np
 
 st.set_page_config(
@@ -15,7 +15,7 @@ st.title("YOLO Computer Vision - Object Detection")
 st.write("Upload an image to identify objects.")
 
 st.write("NumPy:", np.__version__)
-st.write("OpenCV:", cv2.__version__)
+# st.write("OpenCV:", cv2.__version__)
 st.success("YOLO imported successfully!")
 
 @st.cache_resource
