@@ -1,101 +1,85 @@
 import streamlit as st
-import subprocess
-import sys
+from ultralytics import YOLO
+from PIL import Image
+import pandas as pd
+import cv2
+import numpy as np
 
-result = subprocess.run(
-    [sys.executable, "-m", "pip", "list"],
-    capture_output=True,
-    text=True
+st.set_page_config(
+    page_title="YOLO Object Detection",
+    page_icon="🔍",
+    layout="wide"
 )
 
-st.code(result.stdout)
+st.title("YOLO Computer Vision - Object Detection")
+st.write("Upload an image to identify objects.")
 
-import cv2
+st.write("NumPy:", np.__version__)
 st.write("OpenCV:", cv2.__version__)
+st.success("YOLO imported successfully!")
 
-from ultralytics import YOLO
-# import streamlit as st
-# from ultralytics import YOLO
-# from PIL import Image
-# import pandas as pd
-# import cv2
-# import numpy as np
+@st.cache_resource
+def load_model():
+    try:
+        model = YOLO("yolo26n.pt")
+        return model
+    except Exception as e:
+        st.error(f"YOLO model loading failed: {e}")
+        raise
 
-# st.set_page_config(
-#     page_title="YOLO Object Detection",
-#     page_icon="🔍",
-#     layout="wide"
-# )
+model = load_model()
 
-# st.title("YOLO Computer Vision - Object Detection")
-# st.write("Upload an image to identify objects.")
+uploaded_file = st.file_uploader(
+    "Upload an image",
+    type=["jpg", "jpeg", "png"]
+)
 
-# st.write("NumPy:", np.__version__)
-# st.write("OpenCV:", cv2.__version__)
-# st.success("YOLO imported successfully!")
+confidence = st.slider(
+    "Confidence Threshold",
+    0.1, 1.0, 0.25
+)
 
-# @st.cache_resource
-# def load_model():
-#     try:
-#         model = YOLO("yolo26n.pt")
-#         return model
-#     except Exception as e:
-#         st.error(f"YOLO model loading failed: {e}")
-#         raise
+if uploaded_file:
+    image = Image.open(uploaded_file).convert("RGB")
 
-# model = load_model()
+    results = model.predict(
+        image,
+        conf=confidence
+    )
 
-# uploaded_file = st.file_uploader(
-#     "Upload an image",
-#     type=["jpg", "jpeg", "png"]
-# )
+    annotated_image = results[0].plot()
 
-# confidence = st.slider(
-#     "Confidence Threshold",
-#     0.1, 1.0, 0.25
-# )
+    col1, col2 = st.columns(2)
 
-# if uploaded_file:
-#     image = Image.open(uploaded_file).convert("RGB")
+    with col1:
+        st.subheader("Original Image")
+        st.image(image, use_container_width=True)
 
-#     results = model.predict(
-#         image,
-#         conf=confidence
-#     )
+    with col2:
+        st.subheader("Detection Results")
+        st.image(
+            annotated_image[:, :, ::-1],
+            use_container_width=True
+        )
 
-#     annotated_image = results[0].plot()
+    detections = []
 
-#     col1, col2 = st.columns(2)
+    for box in results[0].boxes:
+        class_id = int(box.cls[0])
+        class_name = model.names[class_id]
+        conf = float(box.conf[0])
 
-#     with col1:
-#         st.subheader("Original Image")
-#         st.image(image, use_container_width=True)
+        detections.append({
+            "Object": class_name,
+            "Confidence": round(conf, 3)
+        })
 
-#     with col2:
-#         st.subheader("Detection Results")
-#         st.image(
-#             annotated_image[:, :, ::-1],
-#             use_container_width=True
-#         )
+    st.subheader("Detected Objects")
 
-#     detections = []
-
-#     for box in results[0].boxes:
-#         class_id = int(box.cls[0])
-#         class_name = model.names[class_id]
-#         conf = float(box.conf[0])
-
-#         detections.append({
-#             "Object": class_name,
-#             "Confidence": round(conf, 3)
-#         })
-
-#     st.subheader("Detected Objects")
-
-#     if detections:
-#         st.dataframe(
-#             pd.DataFrame(detections),
-#             use_container_width=True
-#         )
-#     else:
-#         st.info("No objects detected.")
+    if detections:
+        st.dataframe(
+            pd.DataFrame(detections),
+            use_container_width=True
+        )
+    else:
+        st.info("No objects detected.")
