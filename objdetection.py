@@ -19,7 +19,7 @@ def load_model():
         return model
     except Exception as e:
         st.error(f"YOLO model loading failed: {e}")
-        raise)
+        raise
 
 model = load_model()
 
