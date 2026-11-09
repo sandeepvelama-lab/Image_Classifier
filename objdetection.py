@@ -2,6 +2,8 @@ import streamlit as st
 from ultralytics import YOLO
 from PIL import Image
 import pandas as pd
+import cv2
+import numpy as np
 
 st.set_page_config(
     page_title="YOLO Object Detection",
