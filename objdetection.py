@@ -14,7 +14,12 @@ st.write("Upload an image to identify objects.")
 
 @st.cache_resource
 def load_model():
-    return YOLO("yolo26n.pt")
+    try:
+        model = YOLO("yolo26n.pt")
+        return model
+    except Exception as e:
+        st.error(f"YOLO model loading failed: {e}")
+        raise)
 
 model = load_model()
 
